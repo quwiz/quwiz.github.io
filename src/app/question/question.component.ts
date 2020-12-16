@@ -11,7 +11,7 @@ import { Option, Question } from '../shared/model/question.model';
 })
 export class QuestionComponent implements OnInit {
   private quizState: number;
-  private tsString = '';
+  timerString = '--:--';
   currentQuestion: any;
   correctOption = -1;
   chosenOption = '';
@@ -32,26 +32,22 @@ export class QuestionComponent implements OnInit {
     return this.quizState === 1;
   }
 
-  getTimer(): string {
-    return this.tsString;
-  }
-
   countDown(): void {
     const inst = this;
 
     const onCountdown = (ts: number) => {
-      inst.tsString = dayjs.unix(ts).format('mm:ss');
+      inst.timerString = dayjs.unix(ts).format('mm:ss');
     };
 
     const onTimeUp = () => {
-      this.revealAnswer();
+      // this.revealAnswer();
     };
 
     this.timer.countdown(10, onCountdown, onTimeUp);
   }
 
   markSelected(e: MouseEvent): void {
-    const target = e.target || e.srcElement || e.currentTarget;
+    const target = (e.target || e.srcElement || e.currentTarget) as Element;
 
     document.querySelectorAll('li.option p').forEach((el: Element) => {
       el.classList.remove('option-selected');
@@ -70,9 +66,9 @@ export class QuestionComponent implements OnInit {
         this.correctOption = response.options.reduce((p: number, c: Option) => {
           return (response.options[p].weight > c.weight) ? p : response.options.indexOf(c);
         }, 0) + 1;
-      });
 
-    this.countDown();
+        this.countDown();
+      });
   }
 
   revealAnswer(): void {
@@ -89,8 +85,11 @@ export class QuestionComponent implements OnInit {
       }
     }
 
+    this.timer.resetTimer();
+
     this.correctOption = -1;
     this.chosenOption = '';
+    this.timerString = '--:--';
   }
 
   closeQuiz(): void {

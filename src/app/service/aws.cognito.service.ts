@@ -7,8 +7,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AwsCognitoService {
-  private authenticated = false;
-
   constructor(private http: HttpClient) { }
 
   public getTokenDetailsFromCognito(callbackCode: string): Observable<any> {
@@ -32,11 +30,11 @@ export class AwsCognitoService {
         });
   }
 
-  public logout(): Observable<any> {
+  public logout(): void {
     localStorage.removeItem('id_token');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    return this.http.get<any>(environment.LOGOUT_URL);
+    window.location.assign(environment.LOGOUT_URL);
   }
 
   public isAuthenticated(): boolean {

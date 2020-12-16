@@ -26,11 +26,15 @@ export class TimerService {
         inst.endTime = -1;
 
         onTimeUp();
-       
+
         return;
       }
 
       onCountdown(inst.endTime - now);
     }, 1000);
+  }
+
+  resetTimer(): void {
+    clearInterval(this.interval);
   }
 }

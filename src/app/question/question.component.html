@@ -1,9 +1,18 @@
-<button (click)='this.startQuiz()' *ngIf='!this.isQuizStarted()'>Launch</button>
+<button type="button" class="btn btn-primary btn-block" (click)='this.startQuiz()' *ngIf='!this.isQuizStarted()'>Launch</button>
 <div class="question" *ngIf='this.isQuizStarted()'>
 	<p>{{ currentQuestion.text }}</p>
 	<ng-container *ngFor="let option of currentQuestion.options; let i = index">
 		<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)">{{ option.text }}</li>
 	</ng-container>
-	<p [innerHTML]="getTimer()"></p>
-	<button (click)='this.nextQuestion()'>Next</button>
+	<div id="timer" *ngIf="timerString != ''">
+		<span class="timer">{{ timerString }}</span>
+	</div>
+	<div class="row">
+		<div class="col-sm">
+			<button type="button" class="btn btn-primary btn-block" (click)='this.revealAnswer()'>Reveal</button>
+		</div>
+		<div class="col-sm">
+			<button type="button" class="btn btn-danger btn-block" (click)='this.nextQuestion()'>Next</button>
+		</div>
+	</div>
 </div>
