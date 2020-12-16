@@ -1,5 +1,5 @@
-const REDIRECT_URL = 'https://kanchana.senadheera.net/quwiz/home';
-const LOGOUT_URL = 'https://kanchana.senadheera.net/quwiz/home';
+const REDIRECT_URL = 'https://quwiz.github.io/home';
+const LOGOUT_URL = 'https://quwiz.github.io/home';
 
 export const environment = {
   production: true,
