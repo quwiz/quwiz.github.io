@@ -1,5 +1,5 @@
-const REDIRECT_URL = 'http://localhost:4200/home';
-const LOGOUT_URL = 'http://localhost:4200/home';
+const REDIRECT_URL = 'https://kanchana.senadheera.net/quwiz/home';
+const LOGOUT_URL = 'https://kanchana.senadheera.net/quwiz/home';
 
 export const environment = {
   production: true,
