@@ -10,7 +10,7 @@ import { AwsCognitoService } from './service/aws.cognito.service';
 export class AppComponent {
   title = 'quwiz';
 
-  constructor(private authService: AwsCognitoService) {}
+  constructor(public authService: AwsCognitoService) {}
 
   logout(): void {
     this.authService.logout();

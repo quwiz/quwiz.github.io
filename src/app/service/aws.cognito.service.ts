@@ -10,7 +10,7 @@ export class AwsCognitoService {
   constructor(private http: HttpClient) { }
 
   public getTokenDetailsFromCognito(callbackCode: string): Observable<any> {
-    const details = {
+    const details: any = {
       grant_type: 'authorization_code',
       code: callbackCode,
       scope: 'openid+profile',

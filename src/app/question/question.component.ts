@@ -47,7 +47,7 @@ export class QuestionComponent implements OnInit {
   }
 
   markSelected(e: MouseEvent): void {
-    const target = (e.target || e.srcElement || e.currentTarget) as Element;
+    const target = (e.target || e.srcElement || e.currentTarget) as any;
 
     document.querySelectorAll('li.option p').forEach((el: Element) => {
       el.classList.remove('option-selected');
@@ -74,14 +74,14 @@ export class QuestionComponent implements OnInit {
   revealAnswer(): void {
     const correctOption = 'option' + this.correctOption;
 
-    document.getElementById(correctOption).classList.add('option-correct');
+    document.getElementById(correctOption)!.classList.add('option-correct');
 
     if(this.chosenOption) {
       if(this.chosenOption === correctOption) {
-        document.getElementById(this.chosenOption).classList.add('option-chosen-correct');
+        document.getElementById(this.chosenOption)!.classList.add('option-chosen-correct');
       }
       else {
-        document.getElementById(this.chosenOption).classList.add('option-chosen-incorrect');
+        document.getElementById(this.chosenOption)!.classList.add('option-chosen-incorrect');
       }
     }
 
