@@ -1,7 +1,29 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { QuestionComponent } from './question/question.component';
+import { SplashComponent } from './splash/splash.component';
+import { TokenResolverService } from './service/token-resolver.service';
+import { AuthGuardService } from './service/auth-guard.service';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'quiz/start',
+    component: QuestionComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'home',
+    component: SplashComponent,
+    resolve: {
+      access: TokenResolverService
+    }
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -1,0 +1,9 @@
+<button (click)='this.startQuiz()' *ngIf='!this.isQuizStarted()'>Launch</button>
+<div class="question" *ngIf='this.isQuizStarted()'>
+	<p>{{ currentQuestion.text }}</p>
+	<ng-container *ngFor="let option of currentQuestion.options; let i = index">
+		<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)">{{ option.text }}</li>
+	</ng-container>
+	<p [innerHTML]="getTimer()"></p>
+	<button (click)='this.nextQuestion()'>Next</button>
+</div>
