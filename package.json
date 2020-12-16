@@ -7,10 +7,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "deploy": "ng build --prod --base-href=/quwiz/"
   },
   "private": true,
-  "deploy": "ng build --prod --base-href=/quwiz/",
   "dependencies": {
     "@angular/animations": "~11.0.4",
     "@angular/common": "~11.0.4",
