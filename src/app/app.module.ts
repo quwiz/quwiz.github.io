@@ -7,13 +7,17 @@ import { AppComponent } from './app.component';
 import { QuestionComponent } from './question/question.component';
 import { SplashComponent } from './splash/splash.component';
 import { HTTPAuthInterceptor } from './service/http.auth.interceptor';
+import { IconsComponent } from './common/icons/icons.component';
+import { SpinnerComponent } from './common/spinner/spinner.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     QuestionComponent,
-    SplashComponent
+    SplashComponent,
+    IconsComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

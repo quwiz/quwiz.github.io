@@ -1,6 +1,14 @@
-<button type="button" class="btn btn-primary btn-block" (click)='this.startQuiz()' *ngIf='!this.isQuizStarted()'>Launch</button>
-<div class="question" *ngIf='this.isQuizStarted()'>
-	<p>{{ currentQuestion.text }}</p>
+<div class="nav nav-buttons">
+	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round1')">Round 1</button>
+	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round2')">Round 2</button>
+	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round3')">Round 3</button>
+</div>
+
+<div *ngIf="this.quizState === QuizStateEnum.QUESTION_LOADING">
+	<app-spinner></app-spinner>
+</div>
+<div class="question" *ngIf='this.quizState === QuizStateEnum.NEXT_QUESTION'>
+	<p>{{ currentQuestionNumber }}.{{ currentQuestion.text }}</p>
 	<ng-container *ngFor="let option of currentQuestion.options; let i = index">
 		<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)">{{ option.text }}</li>
 	</ng-container>
@@ -8,8 +16,8 @@
 		<span class="timer">{{ timerString }}</span>
 	</div>
 	<div class="row">
-		<div class="col-sm">
-			<button type="button" class="btn btn-primary btn-block" (click)='this.revealAnswer()'>Reveal</button>
+		<div *ngIf="this.activeRound !== 'round3'" class="col-sm">
+			<button type="button" class="btn btn-apiit btn-block" (click)='this.revealAnswer()'>Reveal</button>
 		</div>
 		<div class="col-sm">
 			<button type="button" class="btn btn-danger btn-block" (click)='this.nextQuestion()'>Next</button>
