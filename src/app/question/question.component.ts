@@ -4,6 +4,8 @@ import { TimerService } from '../service/timer.service';
 import * as dayjs from 'dayjs';
 import { Option, Question } from '../shared/model/question.model';
 import { QuizState } from '../shared/quiz-state';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-question',
@@ -22,7 +24,9 @@ export class QuestionComponent implements OnInit {
   chosenOption = '';
   activeRound = '';
 
-  constructor(private questionsService: QuestionsService,
+  constructor(private location: Location,
+              private route: ActivatedRoute,
+              private questionsService: QuestionsService,
               private timer: TimerService) {
     this.quizState = 0;
   }
@@ -32,6 +36,25 @@ export class QuestionComponent implements OnInit {
       .getQuestionTemplate('5fdc55559d4a08a651ffbe85')
       .subscribe((response) => {
         this.quizTemplate = response;
+
+        this.route.params.subscribe(params => {
+          if(params.round && params.question) {
+            if(!this.quizTemplate.hasOwnProperty(params.round)) {
+              console.error(`Invalid round name: ${params.round}`);
+              return;
+            }
+            this.activeRound = params.round;
+
+            const i: number | undefined = parseInt(params.question, 10);
+            if(i === undefined || i < 1 || i > this.quizTemplate[this.activeRound].questions.length) {
+              console.error(`Invalid question index: ${params.question}`);
+              return;
+            }
+
+            this.currentQuestionIndex = i - 2;
+            this.nextQuestion();
+          }
+        });
       });
   }
 
@@ -51,6 +74,7 @@ export class QuestionComponent implements OnInit {
     this.timerString = '--:--';
     this.chosenOption = '';
     this.nextQuestion();
+    this.location.go(`/quiz/${round}/1`);
   }
 
   isQuizStarted(): boolean {

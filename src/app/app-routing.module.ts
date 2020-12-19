@@ -17,6 +17,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'quiz/:round/:question',
+    component: QuestionComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
     path: 'home',
     component: SplashComponent,
     resolve: {
