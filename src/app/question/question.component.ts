@@ -91,6 +91,7 @@ export class QuestionComponent implements OnInit {
     const inst = this;
 
     const onCountdown = (ts: number) => {
+      console.log('TS: ', ts, dayjs.unix(ts), dayjs.unix(ts).format('mm:ss'));
       inst.timerString = dayjs.unix(ts).format('mm:ss');
     };
 
