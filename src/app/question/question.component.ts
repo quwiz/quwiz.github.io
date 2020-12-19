@@ -127,6 +127,7 @@ export class QuestionComponent implements OnInit {
     this.currentQuestionIndex += 1;
 
     if(this.currentQuestionIndex >= this.quizTemplate[this.activeRound].questions.length) {
+      this.currentQuestionIndex -= 1; //TODO: Check and fix this
       this.quizState = QuizState.NEXT_QUESTION;
       this.toastr.toastWarning('No more questions for this round!');
       return;
