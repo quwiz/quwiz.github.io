@@ -1,6 +1,7 @@
 <div class="nav nav-buttons">
 	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round1')">Round 1</button>
-	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round2')">Round 2</button>
+	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round21')">Round 2 - 1</button>
+	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round22')">Round 2 - 2</button>
 	<button type="button" class="btn btn-apiit btn-block" (click)="this.startQuiz('round3')">Round 3</button>
 </div>
 
@@ -8,19 +9,28 @@
 	<app-spinner></app-spinner>
 </div>
 <div class="question" *ngIf='this.quizState === QuizStateEnum.NEXT_QUESTION'>
-	<p>{{ currentQuestionNumber }}.{{ currentQuestion.text }}</p>
-	<ng-container *ngFor="let option of currentQuestion.options; let i = index">
-		<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)">{{ option.text }}</li>
-	</ng-container>
-	<div id="timer" *ngIf="timerString != ''">
-		<span class="timer">{{ timerString }}</span>
-	</div>
-	<div class="row">
-		<div *ngIf="this.activeRound !== 'round3'" class="col-sm">
-			<button type="button" class="btn btn-apiit btn-block" (click)='this.revealAnswer()'>Reveal</button>
+	<div class="col-sm">
+		<p>{{ currentQuestionNumber }}.{{ currentQuestion.text }}</p>
+		<div class="row">
+			<div [ngClass]="hasMultimedia() ? 'col-sm-8' : 'col-sm'">
+				<ng-container *ngFor="let option of currentQuestion.options; let i = index">
+					<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)">{{ option.text }}</li>
+				</ng-container>
+			</div>
+			<div class="col-sm-4"
+			[innerHTML]="multimedia"
+			*ngIf="hasMultimedia()"></div>
 		</div>
-		<div class="col-sm">
-			<button type="button" class="btn btn-danger btn-block" (click)='this.nextQuestion()'>Next</button>
+		<div id="timer" *ngIf="timerString != ''">
+			<span class="timer">{{ timerString }}</span>
+		</div>
+		<div class="row">
+			<div *ngIf="this.activeRound !== 'round3'" class="col-sm">
+				<button type="button" class="btn btn-apiit btn-block" (click)='this.revealAnswer()'>Reveal</button>
+			</div>
+			<div class="col-sm">
+				<button type="button" class="btn btn-danger btn-block" (click)='this.nextQuestion()'>Next</button>
+			</div>
 		</div>
 	</div>
 </div>

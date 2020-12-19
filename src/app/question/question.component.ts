@@ -32,7 +32,6 @@ export class QuestionComponent implements OnInit {
       .getQuestionTemplate('5fdc55559d4a08a651ffbe85')
       .subscribe((response) => {
         this.quizTemplate = response;
-        console.log(this.quizTemplate);
       });
   }
 
@@ -87,6 +86,12 @@ export class QuestionComponent implements OnInit {
     }
   }
 
+  get multimedia(): string {
+    // TODO: Refactor: Generate content based on the content type
+    const content = this.currentQuestion.meta.multimedia[0].content;
+    return '<img class="question-multimedia" src="' + content + '"/>';
+  }
+
   nextQuestion(): void {
     this.quizState = QuizState.QUESTION_LOADING;
     this.currentQuestionIndex += 1;
@@ -114,14 +119,14 @@ export class QuestionComponent implements OnInit {
   revealAnswer(): void {
     const correctOption = 'option' + this.correctOption;
 
-    document.getElementById(correctOption)!.classList.add('option-correct');
+    document.getElementById(correctOption)?.classList.add('option-correct');
 
     if(this.chosenOption) {
       if(this.chosenOption === correctOption) {
-        document.getElementById(this.chosenOption)!.classList.add('option-chosen-correct');
+        document.getElementById(this.chosenOption)?.classList.add('option-chosen-correct');
       }
       else {
-        document.getElementById(this.chosenOption)!.classList.add('option-chosen-incorrect');
+        document.getElementById(this.chosenOption)?.classList.add('option-chosen-incorrect');
       }
     }
 
@@ -134,5 +139,9 @@ export class QuestionComponent implements OnInit {
 
   closeQuiz(): void {
 
+  }
+
+  hasMultimedia(): boolean {
+    return this.currentQuestion?.meta?.multimedia?.length > 0;
   }
 }

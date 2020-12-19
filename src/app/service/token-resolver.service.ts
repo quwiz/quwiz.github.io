@@ -35,8 +35,6 @@ export class TokenResolverService implements Resolve<any> {
 
     return this.awsCognitoService.getTokenDetailsFromCognito(code).pipe(
       switchMap((response: any) => {
-        console.log('Response: ', response);
-
         cognitoService.completeAuthentication(response);
 
         return of(response);
