@@ -5,7 +5,6 @@ import { QuWizToastrService } from '../service/toastr.service';
 import * as dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import advanced from 'dayjs/plugin/advancedFormat';
 import { Option, Question } from '../shared/model/question.model';
 import { QuizState } from '../shared/quiz-state';
 import { ActivatedRoute } from '@angular/router';
@@ -36,7 +35,6 @@ export class QuestionComponent implements OnInit {
     this.quizState = 0;
     dayjs.extend(timezone);
     dayjs.extend(utc);
-    dayjs.extend(advanced);
   }
 
   ngOnInit(): void {
@@ -97,7 +95,7 @@ export class QuestionComponent implements OnInit {
     const inst = this;
 
     const onCountdown = (ts: number) => {
-      inst.timerString = dayjs.unix(ts).format('mm:ss');
+      inst.timerString = dayjs.unix(ts).utc().format('mm:ss');
     };
 
     const onTimeUp = () => {
