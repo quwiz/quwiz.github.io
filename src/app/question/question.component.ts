@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionsService } from '../service/questions.service';
 import { TimerService } from '../service/timer.service';
+import { QuWizToastrService } from '../service/toastr.service';
 import * as dayjs from 'dayjs';
 import { Option, Question } from '../shared/model/question.model';
 import { QuizState } from '../shared/quiz-state';
@@ -27,7 +28,8 @@ export class QuestionComponent implements OnInit {
   constructor(private location: Location,
               private route: ActivatedRoute,
               private questionsService: QuestionsService,
-              private timer: TimerService) {
+              private timer: TimerService,
+              private toastr: QuWizToastrService) {
     this.quizState = 0;
   }
 
@@ -40,14 +42,18 @@ export class QuestionComponent implements OnInit {
         this.route.params.subscribe(params => {
           if(params.round && params.question) {
             if(!this.quizTemplate.hasOwnProperty(params.round)) {
-              console.error(`Invalid round name: ${params.round}`);
+              const message = `Invalid round name: ${params.round}`;
+              this.toastr.toastError(message);
+              console.error(message);
               return;
             }
             this.activeRound = params.round;
 
             const i: number | undefined = parseInt(params.question, 10);
             if(i === undefined || i < 1 || i > this.quizTemplate[this.activeRound].questions.length) {
-              console.error(`Invalid question index: ${params.question}`);
+              const message = `Invalid question index: ${params.question}`;
+              this.toastr.toastError(message);
+              console.error(message);
               return;
             }
 
@@ -120,6 +126,12 @@ export class QuestionComponent implements OnInit {
     this.quizState = QuizState.QUESTION_LOADING;
     this.currentQuestionIndex += 1;
 
+    if(this.currentQuestionIndex >= this.quizTemplate[this.activeRound].questions.length) {
+      this.quizState = QuizState.NEXT_QUESTION;
+      this.toastr.toastWarning('No more questions for this round!');
+      return;
+    }
+
     const questionTime = this.quizTemplate[this.activeRound].questionTime;
     const nextId = this.quizTemplate[this.activeRound].questions[this.currentQuestionIndex];
 
@@ -137,6 +149,8 @@ export class QuestionComponent implements OnInit {
         if(this.activeRound !== 'round3') {
           this.countDown(questionTime);
         }
+
+        this.location.go(`/quiz/${this.activeRound}/${this.currentQuestionIndex + 1}`);
       });
   }
 
