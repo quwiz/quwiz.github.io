@@ -29,7 +29,7 @@ export class TimerService {
 
         return;
       }
-
+      console.log('END: ', inst.endTime, 'NOW: ', now, inst.endTime - now);
       onCountdown(inst.endTime - now);
     }, 1000);
   }
