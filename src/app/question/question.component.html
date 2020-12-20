@@ -10,11 +10,11 @@
 </div>
 <div class="question" *ngIf='this.quizState === QuizStateEnum.NEXT_QUESTION'>
 	<div class="col-sm">
-		<p>{{ currentQuestionNumber }}.{{ currentQuestion.text }}</p>
+		<p [innerHTML]="currentQuestionNumber + '. ' + currentQuestion.text" ></p>
 		<div class="row">
 			<div [ngClass]="hasMultimedia() ? 'col-sm-8' : 'col-sm'">
 				<ng-container *ngFor="let option of currentQuestion.options; let i = index">
-					<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)">{{ option.text }}</li>
+					<li class="option" id="{{ 'option' + (i + 1) }}" (click)="markSelected($event)" [innerHTML]="option.text"></li>
 				</ng-container>
 			</div>
 			<div class="col-sm-4"
