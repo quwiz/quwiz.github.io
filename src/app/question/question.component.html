@@ -21,16 +21,17 @@
 				[innerHTML]="multimedia"
 				*ngIf="hasMultimedia()"></div>
 		</div>
-		<div id="timer" *ngIf="timerString != ''">
-			<span class="timer">{{ timerString }}</span>
-		</div>
-		<div class="row">
-			<div *ngIf="this.activeRound !== 'round3'" class="col-sm">
-				<button type="button" class="btn btn-apiit btn-block" (click)='this.revealAnswer()'>Reveal</button>
-			</div>
-			<div class="col-sm">
-				<button type="button" class="btn btn-danger btn-block" (click)='this.nextQuestion()'>Next</button>
-			</div>
-		</div>
+	</div>
+</div>
+
+<div class="quiz-nav" *ngIf='this.quizState === QuizStateEnum.NEXT_QUESTION'>
+	<div id="timer" *ngIf="timerString != ''">
+		<span class="timer">{{ timerString }}</span>
+	</div>
+	<div *ngIf="this.activeRound !== 'round3'" class="mb-2">
+		<button type="button" class="btn btn-apiit btn-block" (click)='this.revealAnswer()'>Reveal</button>
+	</div>
+	<div class="mt-2">
+		<button type="button" class="btn btn-danger btn-block" (click)='this.nextQuestion()'>Next</button>
 	</div>
 </div>

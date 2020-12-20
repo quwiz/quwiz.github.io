@@ -24,11 +24,18 @@ html, body {
 }
 
 img.question-multimedia {
-  max-width: 200%;
+  max-width: 100%;
 }
 
 div.code-small {
     font-size: 0.7em;
     display: inline-block;
     line-height: 1em;
+}
+
+div.quiz-nav {
+  position: absolute;
+  top: 8em;
+  right: 1em;
+  width: 12em;
 }
