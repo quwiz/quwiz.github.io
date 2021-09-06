@@ -13,7 +13,9 @@ export class TimerService {
     this.endTime = -1;
   }
 
-  countdown(seconds: number, onCountdown: (ts: number) => void, onTimeUp: () => void): void {
+  countdown(seconds: number,
+            onCountdown: (ts: number) => void = () => {},
+            onTimeUp: () => void = () => {}): void {
     const inst = this;
 
     inst.endTime = dayjs().unix() + seconds + 1;

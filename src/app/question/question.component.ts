@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { QuestionsService } from '../service/questions.service';
-import { TimerService } from '../service/timer.service';
-import { QuWizToastrService } from '../service/toastr.service';
+import {Component, OnInit} from '@angular/core';
+import {QuestionsService} from '../service/questions.service';
+import {TimerService} from '../service/timer.service';
+import {QuWizToastrService} from '../service/toastr.service';
 import * as dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { Option, Question } from '../shared/model/question.model';
-import { QuizState } from '../shared/quiz-state';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import {Option, Question, QuizTemplate} from '../shared/model/question.model';
+import {QuizState} from '../shared/quiz-state';
+import {ActivatedRoute} from '@angular/router';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-question',
@@ -22,50 +22,68 @@ export class QuestionComponent implements OnInit {
   currentQuestionIndex = -1;
   currentQuestion: any;
 
-  quizTemplate: any;
+  quizTemplate: QuizTemplate | null = null;
   correctOption = -1;
-  chosenOption = '';
-  activeRound = '';
+  chosenOption = -1;
+  activeRound = -1;
+  template = '';
+  timeLimit = 0;
 
   constructor(private location: Location,
               private route: ActivatedRoute,
               private questionsService: QuestionsService,
               private timer: TimerService,
               private toastr: QuWizToastrService) {
-    this.quizState = 0;
+    this.quizState = QuizState.LOADING;
     dayjs.extend(timezone);
     dayjs.extend(utc);
   }
 
   ngOnInit(): void {
-    this.questionsService
-      .getQuestionTemplate('5fdc55559d4a08a651ffbe85')
-      .subscribe((response) => {
-        this.quizTemplate = response;
+    this.route.params.subscribe(params => {
+      if (params.template) {
+        this.questionsService
+          .getQuestionTemplate(params.template)
+          .subscribe((response) => {
+            this.quizTemplate = response;
+            this.template = params.template;
 
-        this.route.params.subscribe(params => {
-          if (params.round && params.question) {
-            if (!this.quizTemplate.hasOwnProperty(params.round)) {
-              const message = `Invalid round name: ${params.round}`;
-              this.toastr.toastError(message);
-              console.error(message);
-              return;
-            }
-            this.activeRound = params.round;
-
-            const i: number | undefined = parseInt(params.question, 10);
-            if (i === undefined || i < 1 || i > this.quizTemplate[this.activeRound].questions.length) {
-              const message = `Invalid question index: ${params.question}`;
-              this.toastr.toastError(message);
-              console.error(message);
-              return;
+            const heading = document.getElementById('heading');
+            if ( heading !== null) {
+              heading.innerHTML = response.title;
             }
 
-            this.currentQuestionIndex = i - 2;
-            this.nextQuestion();
-          }
-        });
-      });
+            const titleImage: HTMLImageElement | null = document.getElementById('title_image_0') as HTMLImageElement;
+            if ( titleImage !== null) {
+              titleImage.src = response.titleImages[0].content;
+            }
+
+            if (params.round && params.question) {
+              const round: number | undefined = parseInt(params.round, 10);
+              if (round === undefined || !((round - 1) >= 0 && (round - 1) < this.quizTemplate.rounds.length)) {
+                const message = `Invalid round index: ${params.round}`;
+                this.toastr.toastError(message);
+                console.error(message);
+                return;
+              }
+              this.activeRound = round - 1;
+
+              const i: number | undefined = parseInt(params.question, 10);
+              if (i === undefined || i < 1 || i > this.quizTemplate.rounds[this.activeRound].questions.length) {
+                const message = `Invalid question index: ${params.question}`;
+                this.toastr.toastError(message);
+                console.error(message);
+                return;
+              }
+
+              this.currentQuestionIndex = i - 2;
+              this.nextQuestion();
+            }
+            this.quizState = QuizState.INIT;
+          });
+        // TODO: Add error handling
+      }
+    });
   }
 
   public get QuizStateEnum(): typeof QuizState {
@@ -76,15 +94,15 @@ export class QuestionComponent implements OnInit {
     return String(this.currentQuestionIndex + 1).padStart(2, '0');
   }
 
-  startQuiz(round: string): void {
+  startQuiz(round: number): void {
     this.activeRound = round;
     this.quizState = QuizState.NEXT_QUESTION;
     this.currentQuestionIndex = -1;
     this.timer.resetTimer();
     this.timerString = '--:--';
-    this.chosenOption = '';
+    this.chosenOption = -1;
     this.nextQuestion();
-    this.location.go(`/quiz/${round}/1`);
+    this.location.go(`/quiz/${this.template}/${this.activeRound + 1}/1`);
   }
 
   isQuizStarted(): boolean {
@@ -105,7 +123,10 @@ export class QuestionComponent implements OnInit {
     this.timer.countdown(seconds, onCountdown, onTimeUp);
   }
 
-  markSelected(e: MouseEvent): void {
+  markSelected(e: MouseEvent, index: number): void {
+    if (this.chosenOption > -1) {
+      return;
+    }
     const target = (e.target || e.srcElement || e.currentTarget) as any;
 
     document.querySelectorAll('li.option p').forEach((el: Element) => {
@@ -113,11 +134,7 @@ export class QuestionComponent implements OnInit {
     });
     target.classList.add('option-selected');
 
-    this.chosenOption = target.attributes.id.nodeValue;
-
-    if (this.activeRound === 'round3') {
-      this.countDown(this.quizTemplate[this.activeRound].questionTime);
-    }
+    this.chosenOption = index;
   }
 
   get multimedia(): string {
@@ -127,18 +144,25 @@ export class QuestionComponent implements OnInit {
   }
 
   nextQuestion(): void {
-    this.quizState = QuizState.QUESTION_LOADING;
+    this.quizState = QuizState.LOADING;
     this.currentQuestionIndex += 1;
 
-    if (this.currentQuestionIndex >= this.quizTemplate[this.activeRound].questions.length) {
+    this.timer.resetTimer();
+    this.timerString = '--:--';
+
+    if (this.quizTemplate == null) {
+      console.error('Quiz Template might not have been loaded!');
+      return;
+    }
+
+    if (this.currentQuestionIndex >= this.quizTemplate.rounds[this.activeRound].questions.length) {
       this.currentQuestionIndex -= 1; // TODO: Check and fix this
       this.quizState = QuizState.NEXT_QUESTION;
       this.toastr.toastWarning('No more questions for this round!');
       return;
     }
 
-    const questionTime = this.quizTemplate[this.activeRound].questionTime;
-    const nextId = this.quizTemplate[this.activeRound].questions[this.currentQuestionIndex];
+    const nextId = this.quizTemplate.rounds[this.activeRound].questions[this.currentQuestionIndex];
 
     this.questionsService
       .getQuestionById(nextId)
@@ -147,42 +171,55 @@ export class QuestionComponent implements OnInit {
 
         this.correctOption = response.options.reduce((p: number, c: Option) => {
           return (response.options[p].weight > c.weight) ? p : response.options.indexOf(c);
-        }, 0) + 1;
+        }, 0);
+
+        this.chosenOption = -1;
 
         this.quizState = QuizState.NEXT_QUESTION;
 
-        if (this.activeRound !== 'round3') {
-          this.countDown(questionTime);
+        if (this.quizTemplate?.rounds[this.activeRound].countdownAutoStart) {
+          this.countDown(this.quizTemplate?.rounds[this.activeRound].questionTime);
         }
 
-        this.location.go(`/quiz/${this.activeRound}/${this.currentQuestionIndex + 1}`);
+        this.location.go(`/quiz/${this.template}/${this.activeRound + 1}/${this.currentQuestionIndex + 1}`);
       });
   }
 
   revealAnswer(): void {
-    const correctOption = 'option' + this.correctOption;
+    const chosenOption = 'option' + (this.chosenOption + 1);
+    const correctOption = 'option' + (this.correctOption + 1);
 
     document.getElementById(correctOption)?.classList.add('option-correct');
 
-    if (this.chosenOption) {
-      if (this.chosenOption === correctOption) {
-        document.getElementById(this.chosenOption)?.classList.add('option-chosen-correct');
-      }
-      else {
-        document.getElementById(this.chosenOption)?.classList.add('option-chosen-incorrect');
-      }
+    if (this.chosenOption === this.correctOption) {
+      document.getElementById(chosenOption)?.classList.add('option-chosen-correct');
+    }
+    else {
+      document.getElementById(chosenOption)?.classList.add('option-chosen-incorrect');
     }
 
     this.timer.resetTimer();
+    this.timerString = '--:--';
 
     this.correctOption = -1;
-    this.chosenOption = '';
+    this.chosenOption = -1;
+  }
+
+  startTimer(): void {
+    if (this.quizTemplate === null) {
+      this.toastr.toastError('Quiz template might not have been initialised!');
+      return;
+    }
+
+    this.countDown(this.quizTemplate.rounds[this.activeRound].questionTime);
+  }
+
+  resetTimer(): void {
+    this.timer.resetTimer();
     this.timerString = '--:--';
   }
 
-  closeQuiz(): void {
-
-  }
+  closeQuiz(): void { }
 
   hasMultimedia(): boolean {
     return this.currentQuestion?.meta?.multimedia?.length > 0;

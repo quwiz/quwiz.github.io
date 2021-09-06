@@ -17,7 +17,7 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
-    path: 'quiz/:round/:question',
+    path: 'quiz/:template/:round/:question',
     component: QuestionComponent,
     canActivate: [AuthGuardService]
   },

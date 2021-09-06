@@ -9,6 +9,7 @@ import { AwsCognitoService } from './service/aws.cognito.service';
 })
 export class AppComponent {
   title = 'quwiz';
+  heading = 'QuWiz - Online Quiz Conductor Wizard';
 
   constructor(public authService: AwsCognitoService) {}
 

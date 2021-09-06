@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Question, QuizTemplateIdentity } from '../shared/model/question.model';
+import {Question, QuizTemplate, QuizTemplateIdentity} from '../shared/model/question.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,8 +15,8 @@ export class QuestionsService {
     return this.http.get<QuizTemplateIdentity[]>(`${ environment.API_BASE_URL }/api/v1.0/templates/list`);
   }
 
-  getQuestionTemplate(id: string): Observable<any> {
-    return this.http.get<any>(`${ environment.API_BASE_URL }/api/v1.0/template/${ id }`);
+  getQuestionTemplate(id: string): Observable<QuizTemplate> {
+    return this.http.get<QuizTemplate>(`${ environment.API_BASE_URL }/api/v1.0/template/${ id }`);
   }
 
   getQuestionById(id: string): Observable<Question> {

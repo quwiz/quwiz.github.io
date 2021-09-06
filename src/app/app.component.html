@@ -47,7 +47,7 @@
     font-weight: 600;
   }
 
-  #logo {
+  img.logo {
     width: 50px;
     fill: #fff;
   }
@@ -307,10 +307,11 @@
 <app-icons></app-icons>
 <div class="toolbar" role="banner">
   <img
-    id="logo"
-    alt="ICT Club Logo"
-    src="assets/img/mgck_ictc.png" />
-  <span>Inter-school Quiz Competition - Information and Communication Technology Day - Mahamaya Girls' College Kandy</span>
+    id="title_image_0"
+    class="logo"
+    alt="Title Image 1"
+    src="assets/img/apiit_logo.png"/>
+  <span id="heading">{{heading}}</span>
     <div class="spacer"></div>
     <a *ngIf="authService.isAuthenticated()" aria-label="Logout from QuWiz" rel="noopener" href="javascript:void(0);"
      (click)="logout()" title="Logout">
