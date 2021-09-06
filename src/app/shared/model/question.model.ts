@@ -18,3 +18,8 @@ export interface Multimedia {
     contentType: string;
     content: string;
 }
+
+export interface QuizTemplateIdentity {
+  _id: string;
+  name: string;
+}

@@ -11,6 +11,7 @@ import { HTTPAuthInterceptor } from './service/http.auth.interceptor';
 import { IconsComponent } from './common/icons/icons.component';
 import { SpinnerComponent } from './common/spinner/spinner.component';
 import { ToastrModule } from 'ngx-toastr';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -21,13 +22,14 @@ import { ToastrModule } from 'ngx-toastr';
     IconsComponent,
     SpinnerComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot()
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        FormsModule
+    ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HTTPAuthInterceptor, multi: true }
   ],

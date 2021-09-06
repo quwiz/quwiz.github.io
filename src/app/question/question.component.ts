@@ -44,8 +44,8 @@ export class QuestionComponent implements OnInit {
         this.quizTemplate = response;
 
         this.route.params.subscribe(params => {
-          if(params.round && params.question) {
-            if(!this.quizTemplate.hasOwnProperty(params.round)) {
+          if (params.round && params.question) {
+            if (!this.quizTemplate.hasOwnProperty(params.round)) {
               const message = `Invalid round name: ${params.round}`;
               this.toastr.toastError(message);
               console.error(message);
@@ -54,7 +54,7 @@ export class QuestionComponent implements OnInit {
             this.activeRound = params.round;
 
             const i: number | undefined = parseInt(params.question, 10);
-            if(i === undefined || i < 1 || i > this.quizTemplate[this.activeRound].questions.length) {
+            if (i === undefined || i < 1 || i > this.quizTemplate[this.activeRound].questions.length) {
               const message = `Invalid question index: ${params.question}`;
               this.toastr.toastError(message);
               console.error(message);
@@ -115,7 +115,7 @@ export class QuestionComponent implements OnInit {
 
     this.chosenOption = target.attributes.id.nodeValue;
 
-    if(this.activeRound === 'round3') {
+    if (this.activeRound === 'round3') {
       this.countDown(this.quizTemplate[this.activeRound].questionTime);
     }
   }
@@ -130,8 +130,8 @@ export class QuestionComponent implements OnInit {
     this.quizState = QuizState.QUESTION_LOADING;
     this.currentQuestionIndex += 1;
 
-    if(this.currentQuestionIndex >= this.quizTemplate[this.activeRound].questions.length) {
-      this.currentQuestionIndex -= 1; //TODO: Check and fix this
+    if (this.currentQuestionIndex >= this.quizTemplate[this.activeRound].questions.length) {
+      this.currentQuestionIndex -= 1; // TODO: Check and fix this
       this.quizState = QuizState.NEXT_QUESTION;
       this.toastr.toastWarning('No more questions for this round!');
       return;
@@ -151,7 +151,7 @@ export class QuestionComponent implements OnInit {
 
         this.quizState = QuizState.NEXT_QUESTION;
 
-        if(this.activeRound !== 'round3') {
+        if (this.activeRound !== 'round3') {
           this.countDown(questionTime);
         }
 
@@ -164,8 +164,8 @@ export class QuestionComponent implements OnInit {
 
     document.getElementById(correctOption)?.classList.add('option-correct');
 
-    if(this.chosenOption) {
-      if(this.chosenOption === correctOption) {
+    if (this.chosenOption) {
+      if (this.chosenOption === correctOption) {
         document.getElementById(this.chosenOption)?.classList.add('option-chosen-correct');
       }
       else {

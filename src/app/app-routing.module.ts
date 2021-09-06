@@ -12,7 +12,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'quiz/start',
+    path: 'quiz/:template/start',
     component: QuestionComponent,
     canActivate: [AuthGuardService]
   },

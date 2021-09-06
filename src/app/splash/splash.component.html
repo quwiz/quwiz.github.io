@@ -1,1 +1,14 @@
-<button [routerLink]="'/quiz/start'" class="btn btn-apiit" >Start Quiz!</button>
+<form class="col-lg-6 offset-lg-3">
+  <div class="row justify-content-center">
+    <div class="form-group">
+      <label for="templates" style="width: 100%; text-align: center;">Choose the Quiz to Proceed</label>
+      <select style="width: 100%;" class="form-control" *ngIf="authService.isAuthenticated()"
+              id='templates' name='templates' [(ngModel)]="selectedTemplate" >
+        <option *ngFor="let item of templates" [ngValue]="item._id">
+          {{item.name}}
+        </option>
+      </select>
+    </div>
+    <button [routerLink]="['/quiz', selectedTemplate, 'start']" class="btn btn-apiit" >Start Quiz!</button>
+  </div>
+</form>
